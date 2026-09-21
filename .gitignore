@@ -1,0 +1,41 @@
+# ========================================
+# Germline WES Pipeline - Git ignore rules
+# ========================================
+
+# Raw sequencing data
+data/raw/
+*.fastq
+*.fastq.gz
+*.fq
+*.fq.gz
+
+# Alignment files
+*.bam
+*.bai
+*.cram
+*.crai
+*.sam
+
+# Reference genome files
+*.fa
+*.fasta
+*.fna
+
+# Large compressed variant files
+*.vcf.gz
+*.bcf
+
+# Index files
+*.tbi
+*.csi
+
+# Temporary files
+*.tmp
+*.temp
+
+# Log files
+*.log
+
+# OS/editor files
+.DS_Store
+*~
