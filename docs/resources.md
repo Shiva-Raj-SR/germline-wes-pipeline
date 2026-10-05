@@ -50,3 +50,36 @@ The exact GIAB benchmark release will be selected and documented before benchmar
 ## Compatibility requirement
 
 Reference FASTA, known-sites VCFs, capture intervals, and benchmarking resources must use compatible genome coordinates and contig naming conventions.
+
+## WES capture design
+
+Benchmark sample HG002 (NA24385; SRR2962669) was generated using the Agilent SureSelect Human All Exon V5 capture design.
+
+Design identifier: S04380110
+
+Source used for hg38 intervals:
+UCSC hg38 exomeProbesets archive.
+
+Downloaded resources:
+
+- S04380110_Covered.bb
+- S04380110_Regions.bb
+
+Both BigBed files were converted to BED using the UCSC `bigBedToBed` utility.
+
+The resulting BED files were byte-identical:
+
+- 230,719 intervals
+- 50,446,305 bp total target territory
+- 50.45 Mb unique merged footprint
+- chromosomes: chr1-chr22, chrX, chrY
+
+SHA256 of both BED files:
+
+5c03072ed0583b22847bb5e0df4e725c05f32953a4bd53f1b30e6dbbb6d29342
+
+The BED was converted to a Picard/GATK interval list using the Broad GRCh38 sequence dictionary:
+
+S04380110_Regions.interval_list
+
+The resulting interval list contains 230,719 intervals spanning 50,446,305 bases.

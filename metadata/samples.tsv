@@ -1,2 +1,2 @@
-sample_id	isolate	sex	assay	role
-HG002	NA24385	male	WES	benchmark
+sample_id	isolate	sex	assay	run_accession	experiment_accession	platform	layout	read_length	capture_kit	role
+HG002	NA24385	male	WES	SRR2962669	SRX1453593	Illumina_HiSeq_2500	paired	2x125bp	Agilent_SureSelect_Human_All_Exon_V5	benchmark

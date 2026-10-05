@@ -52,4 +52,9 @@ data/raw/
 # Known-sites genomic resources
 resources/known_sites/*.vcf
 resources/known_sites/*.idx
+
+# Exome capture resources
+resources/intervals/*.bb
+resources/intervals/*.bed
+resources/intervals/*.interval_list
 *~
