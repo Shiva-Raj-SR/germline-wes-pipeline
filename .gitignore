@@ -48,4 +48,8 @@ data/raw/
 *.pac
 *.sa
 *.alt
+
+# Known-sites genomic resources
+resources/known_sites/*.vcf
+resources/known_sites/*.idx
 *~
