@@ -38,4 +38,14 @@ data/raw/
 
 # OS/editor files
 .DS_Store
+
+# Reference indexes and dictionaries
+*.fai
+*.dict
+*.amb
+*.ann
+*.bwt
+*.pac
+*.sa
+*.alt
 *~
