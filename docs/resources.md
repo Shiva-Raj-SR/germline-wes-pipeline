@@ -83,3 +83,34 @@ The BED was converted to a Picard/GATK interval list using the Broad GRCh38 sequ
 S04380110_Regions.interval_list
 
 The resulting interval list contains 230,719 intervals spanning 50,446,305 bases.
+
+## GIAB HG002 benchmark
+
+Primary benchmark:
+
+- Sample: HG002
+- GIAB release: v5.0q
+- Reference build: GRCh38
+- Benchmark type: small variants
+- Truth VCF: HG002_GRCh38_v5.0q_smvar.vcf.gz
+- Benchmark regions: HG002_GRCh38_v5.0q_smvar.benchmark.bed
+
+GIAB v5.0q is an assembly-based benchmark. The VCF and benchmark BED are used together.
+
+For WES benchmarking, the GIAB benchmark regions were intersected with the Agilent SureSelect Human All Exon V5 target intervals.
+
+Derived WES benchmark region:
+
+HG002_GRCh38_v5.0q_smvar_AgilentV5.benchmark.bed
+
+Statistics:
+
+- Agilent V5 target territory: 50,446,305 bp
+- WES benchmark territory: 49,216,825 bp
+- Benchmarkable target fraction: 97.56%
+- Benchmark intervals: 224,081
+- GIAB truth VCF records within this territory: 43,199
+
+SHA256:
+
+b5032c31e4611c5b6d488e6342a24d66999394550d8f3a8e5160218f81d4f7e0

@@ -57,4 +57,11 @@ resources/known_sites/*.idx
 resources/intervals/*.bb
 resources/intervals/*.bed
 resources/intervals/*.interval_list
+
+# GIAB benchmark resources
+resources/giab/*.vcf.gz
+resources/giab/*.tbi
+resources/giab/*.bed
+resources/giab/*.txt
+resources/giab/*.md
 *~
