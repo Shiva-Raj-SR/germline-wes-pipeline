@@ -69,4 +69,7 @@ resources/giab/*.md
 results/qc/fastqc/*.zip
 results/qc/fastqc/*.html
 results/qc/multiqc/multiqc_data/
+
+# Large detailed QC outputs
+results/qc/wes/*.per_target_coverage.txt
 *~
