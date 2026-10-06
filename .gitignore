@@ -64,4 +64,9 @@ resources/giab/*.tbi
 resources/giab/*.bed
 resources/giab/*.txt
 resources/giab/*.md
+
+# Raw QC generated files
+results/qc/fastqc/*.zip
+results/qc/fastqc/*.html
+results/qc/multiqc/multiqc_data/
 *~
