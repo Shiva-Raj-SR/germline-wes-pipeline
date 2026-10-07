@@ -69,3 +69,54 @@ so SNP and indel metrics are reported separately.
 No additional genotype-quality threshold was selected using HG002 benchmark
 performance. This avoids tuning parameters on the same truth set used for
 final performance evaluation.
+
+## Effect of hard filtering
+
+The normalized callset was also benchmarked before hard filtering using
+the identical GIAB truth set and autosomal WES evaluation territory.
+
+### Overall comparison
+
+| Callset | Precision | Sensitivity | F-measure |
+|---|---:|---:|---:|
+| Pre-filter | 96.26% | 97.09% | 96.68% |
+| Hard-filtered PASS | 97.38% | 95.83% | 96.60% |
+
+Hard filtering increased overall precision by 1.12 percentage points
+while reducing sensitivity by 1.26 percentage points. Overall F-measure
+changed only slightly (-0.08 percentage points).
+
+### SNP comparison
+
+| Callset | Precision | Sensitivity | F-measure |
+|---|---:|---:|---:|
+| Pre-filter | 97.41% | 98.16% | 97.79% |
+| Hard-filtered PASS | 98.41% | 96.81% | 97.60% |
+
+For SNPs, hard filtering substantially reduced false positives and
+increased precision, but also removed true-positive variants, producing
+a small reduction in F-measure.
+
+### INDEL comparison
+
+| Callset | Precision | Sensitivity | F-measure |
+|---|---:|---:|---:|
+| Pre-filter | 84.04% | 85.59% | 84.81% |
+| Hard-filtered PASS | 86.31% | 85.27% | 85.79% |
+
+For indels, hard filtering produced a favorable trade-off. Precision
+increased by 2.27 percentage points while sensitivity decreased by only
+0.32 percentage points, increasing the indel F-measure by 0.98
+percentage points.
+
+### Interpretation
+
+The predefined hard-filter thresholds were evaluated rather than
+optimized using HG002. No thresholds were modified in response to the
+HG002 benchmark results, avoiding parameter tuning on the same truth
+set used for final validation.
+
+The hard-filtered PASS callset is retained for downstream annotation
+because it provides higher precision, while both pre-filter and
+post-filter benchmark results are reported to make the sensitivity-
+specificity trade-off explicit.
