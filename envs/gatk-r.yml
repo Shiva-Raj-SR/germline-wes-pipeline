@@ -1,0 +1,12 @@
+name: gatk-r
+channels:
+  - defaults
+  - bioconda
+  - conda-forge
+dependencies:
+  - r-base=4.4
+  - r-gplots
+  - r-ggplot2
+  - r-reshape
+  - r-gsalib
+prefix: /home/shiva/miniconda3/envs/gatk-r
