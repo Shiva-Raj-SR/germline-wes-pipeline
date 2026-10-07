@@ -72,4 +72,12 @@ results/qc/multiqc/multiqc_data/
 
 # Large detailed QC outputs
 results/qc/wes/*.per_target_coverage.txt
+
+# RTG derived reference
+resources/rtg/*.sdf/
+
+# Runtime process/progress files
+*.pid
+results/benchmark/**/done
+results/benchmark/**/progress
 *~

@@ -1,0 +1,8 @@
+name: giab-benchmark
+channels:
+  - defaults
+  - bioconda
+  - conda-forge
+dependencies:
+  - rtg-tools=3.13
+prefix: /home/shiva/miniconda3/envs/giab-benchmark

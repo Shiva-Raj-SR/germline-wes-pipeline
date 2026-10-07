@@ -1,0 +1,3 @@
+Correct phasings: 1404
+Incorrect phasings: 161
+Unresolvable phasings: 0
