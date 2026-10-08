@@ -81,3 +81,15 @@ resources/rtg/*.sdf/
 results/benchmark/**/done
 results/benchmark/**/progress
 *~
+
+# VEP annotation: large outputs and regenerable intermediates
+/results/annotation/vep/
+/results/annotation/test/
+/results/annotation/summary/HG002.vep.*.tsv
+/results/annotation/summary/HG002.genotypes.tsv
+/results/annotation/summary/HG002.high_impact.tsv
+/results/annotation/summary/HG002.rtg_*_alleles.tsv
+/results/annotation/summary/HG002.shortlist30.keys.tsv
+/results/annotation/summary/HG002.shortlist30_GIAB.tsv
+/results/annotation/summary/HG002.clinvar_PLPath.tsv
+/results/annotation/summary/HG002.clinvar_pathogenic.tsv

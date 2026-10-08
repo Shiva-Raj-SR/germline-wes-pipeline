@@ -1,0 +1,9 @@
+name: vep-annotation
+channels:
+  - defaults
+  - bioconda
+  - conda-forge
+dependencies:
+  - bcftools
+  - ensembl-vep=116.2
+prefix: /home/shiva/miniconda3/envs/vep-annotation
