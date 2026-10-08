@@ -134,3 +134,176 @@ All 199 rare HIGH/MODERATE candidates remain available in the
 full prioritization table. The 30-variant shortlist is an
 exploratory technical-review subset, not an exhaustive list
 of potentially clinically relevant variants.
+
+## Independent prioritization producer
+
+`scripts/prioritize_hg002_vep.sh` remains the unchanged six-stage regression
+harness from commit `1526f93`, including its historical CHROM/POS/SYMBOL
+shortlist lookup. The independent `scripts/produce_hg002_prioritization.sh`
+never reads reference output tables. It extracts existing VEP and RTG data;
+it does not run alignment, variant calling, benchmarking, or VEP annotation.
+
+### Inputs and software
+
+Default paths resolve relative to the producer's repository, independently of
+the caller's working directory:
+
+| Input | Repository-relative default |
+|---|---|
+| Single-sample, sequence-resolved VEP analysis VCF | `results/annotation/vep/HG002.autosomes.PASS.vep.analysis.vcf.gz` |
+| Existing RTG call-side TP/FP VCFs | `results/benchmark/rtg/HG002_autosomes/tp.vcf.gz` and `fp.vcf.gz` |
+| Existing 0-based, half-open benchmark BED | `resources/giab/HG002_GRCh38_v5.0q_smvar_AgilentV5.autosomes.benchmark.bed` |
+
+Requirements: Bash, bcftools with `+split-vep`, AWK, and standard utilities
+`cut`, `wc`, `mkdir`, `sha256sum`. Validation used bcftools/htslib 1.21 in
+the existing `vep-annotation` Conda environment. Python 3 is needed only for
+synthetic tests. VEP 116.2 previously generated the annotations; VEP itself,
+its cache, a reference genome, network access, and downloads are not needed.
+
+The input must already be the appropriate autosomal PASS callset with
+GT/DP/GQ/AD and the CSQ fields used in the PICK table. The producer does not
+normalize, split, or reapply upstream hard filters. Exactly one sample is
+required. Multiallelic ALT, spanning-deletion `*`, duplicate genotype allele
+keys, and duplicate PICK allele keys are rejected rather than merged.
+The producer is validated for HG002; input overrides support tests and
+alternate locations, not a validated general clinical pipeline.
+
+### Exact allele identity and thresholds
+
+All genotype, shortlist, RTG, and benchmark-region joins use exact
+`CHROM/POS/REF/ALT` tuples, preserving representations and row order.
+Contig names and alleles must agree across inputs; equivalent haplotype
+representations can remain unmatched. This lookup does not replace RTG's
+haplotype-aware benchmarking.
+
+The baseline expressions are deliberately preserved:
+
+1. Retain `PICK=1` consequences.
+2. Select HIGH or MODERATE impact with known `MAX_AF <= 0.01`, inclusive.
+   Empty or `.` frequency is excluded; no protein-coding biotype restriction
+   is applied. Baseline AWK numeric conversion is retained; malformed
+   nonnumeric frequency strings are not separately validated.
+3. Join genotype evidence by exact allele. With exactly two integer AD counts
+   and positive sum, calculate ALT AD / (REF AD + ALT AD), rounded to three
+   decimals. Review thresholds use this rounded balance.
+4. HIGH-impact flags, in emitted order:
+   `LOW_DEPTH;` if numeric DP < 10 (missing DP coerces to 0);
+   `LOW_ALT_SUPPORT;` if there are two AD entries and integer ALT AD < 10;
+   `ALLELE_IMBALANCE;` if available balance is outside [0.30, 0.70],
+   regardless of genotype; `AD_DP_DISCREPANCY;` if two AD entries exist,
+   DP > 0, and AD sum / DP < 0.5.
+5. Dual-predictor missense selection requires MODERATE impact, a consequence
+   containing `missense_variant`, SIFT starting `deleterious` (including low
+   confidence), and PolyPhen starting `probably_damaging` or
+   `possibly_damaging`. These predictor checks are case insensitive.
+   Flags, in emitted order: missing/empty DP yields `MISSING_DP;`, otherwise
+   DP < 10 yields `LOW_DEPTH;`. Exactly two integer AD counts are required;
+   otherwise flag `MISSING_AD;`. Valid AD with ALT AD < 10 yields
+   `LOW_ALT_SUPPORT;`; integer DP > 0 and AD sum / DP < 0.5 yields
+   `AD_DP_DISCREPANCY;`. Only 0/1 or 1/0, including phased equivalents,
+   receives `MISSING_ALT_BALANCE;` or `ALLELE_IMBALANCE;` outside
+   [0.30, 0.70].
+6. Empty flags become `NO_BASIC_FLAGS`. Strict missense additionally requires
+   the original case-sensitive prefixes `deleterious(` and
+   `probably_damaging(`. Low-confidence SIFT and possibly-damaging PolyPhen
+   are excluded from this strict subset.
+7. Shortlist HIGH records with no basic flags plus strict missense records.
+   Counts derive from inputs; the producer does not enforce 199, 25, or 30.
+8. Exact RTG lookup yields `RTG_TP`, `RTG_FP`, `CHECK_BOTH`, or
+   `NOT_FOUND_EXACT`. TP-only becomes `TP_MATCH_IN_BENCHMARK`.
+   For unmatched alleles, test [POS-1, POS-1+length(REF)) against the BED.
+   Zero overlap means `OUTSIDE_BENCHMARK`. Any overlap, including partial
+   overlap, remains `REQUIRES_REVIEW`; FP and both-set matches also require
+   review. Interval checks do not reclassify TP/FP matches.
+
+These rules intentionally retain branch differences: HIGH missing AD can remain
+unflagged; HIGH homozygous ALT can be flagged for imbalance, while missense
+imbalance applies only to heterozygotes. GQ is reported but never thresholded.
+These exploratory flags are not exhaustive read-level validation. Neither
+HIGH impact, damaging predictions, no basic flags, nor RTG TP concordance
+establishes pathogenicity, phenotype relevance, inheritance, or disease
+causality. Missing population frequency is not evidence of rarity.
+
+### Outputs and protection
+
+The requested output directory **must not exist**; existing directories and
+symlinks are refused. Validated summaries are never overwritten. A failed run
+may leave partial files in its newly created directory; only a manifest ending
+`status=COMPLETE` indicates success. Retry in a fresh directory.
+
+All table names below have the `HG002.` prefix:
+
+| Suffix | Purpose | HG002 rows |
+|---|---|---:|
+| `vep.PICK.tsv` | Preferred consequences | 44,253 |
+| `rare_protein_altering.tsv` | Rare HIGH/MODERATE | 199 |
+| `rare_candidates_with_genotypes.tsv` | Candidates with genotype evidence | 199 |
+| `high_impact_review.tsv` | Historical HIGH review layout | 14 |
+| `rare_missense_both_damaging_review.tsv` | Historical dual-predictor review | 59 |
+| `rare_missense_strict_review.tsv` | Historical strict missense review | 25 |
+| `shortlist30.tsv` | Exact-allele shortlist | 30 |
+| `shortlist30_GIAB.tsv` | Exact RTG status | 30 |
+| `shortlist30_GIAB.final.tsv` | Benchmark interpretation | 30 |
+
+Three new `*.alleles.tsv` companion review tables append REF and ALT to the
+HIGH, dual-predictor, and strict missense layouts. They carry exact identities
+through selection while the nine historical tables remain byte-compatible.
+`HG002.shortlist30.keys.tsv` intentionally changes from the old
+CHROM/POS/SYMBOL/GROUP layout to CHROM/POS/REF/ALT/GROUP. Despite the
+`shortlist30` filename, other valid inputs may produce different counts.
+
+Retained intermediates: `HG002.genotypes.tsv`, `rtg_TP_alleles.tsv`,
+`rtg_FP_alleles.tsv`, `outside_benchmark.keys.tsv`. The manifest records sample,
+bcftools/htslib versions, SHA256 of the producer and all four inputs, and
+completion. HG002 output occupies about 11 MB. Transcript extraction is
+streamed; no full all-transcript table is materialized.
+
+### Execution and verification
+
+Run inside the verified local WSL repository:
+
+```bash
+cd /home/shiva/bioinformatics_projects/germline-wes-pipeline
+conda activate vep-annotation
+run_root="$(mktemp -d /tmp/hg002-prioritization.XXXXXX)"
+scripts/produce_hg002_prioritization.sh --out-dir "$run_root/generated"
+```
+
+The parent exists; its `generated` child must not exist. To override input
+locations (using a different new output child):
+
+```bash
+scripts/produce_hg002_prioritization.sh \
+  --input results/annotation/vep/HG002.autosomes.PASS.vep.analysis.vcf.gz \
+  --rtg-dir results/benchmark/rtg/HG002_autosomes \
+  --benchmark-bed resources/giab/HG002_GRCh38_v5.0q_smvar_AgilentV5.autosomes.benchmark.bed \
+  --out-dir "$run_root/explicit-input-run"
+```
+
+Syntax checks, synthetic tests, unchanged baseline regression, and nine exact
+comparisons:
+
+```bash
+bash -n scripts/produce_hg002_prioritization.sh scripts/prioritize_hg002_vep.sh
+python3 -B tests/test_prioritization_producer.py
+scripts/prioritize_hg002_vep.sh
+for table in \
+  vep.PICK rare_protein_altering rare_candidates_with_genotypes \
+  high_impact_review rare_missense_both_damaging_review \
+  rare_missense_strict_review shortlist30 shortlist30_GIAB shortlist30_GIAB.final
+do
+  cmp "results/annotation/summary/HG002.$table.tsv" \
+      "$run_root/generated/HG002.$table.tsv" || exit 1
+  printf 'BYTE_IDENTICAL: HG002.%s.tsv\n' "$table"
+done
+git diff --check
+git status --short
+```
+
+Synthetic tests run a standalone copy without reference output tables using
+tiny generated VCF/BED fixtures. They cover same-position allele collisions,
+all four key fields, RTG statuses, partial overlap and BED boundaries, threshold
+boundaries, missing metrics, phased/homozygous genotypes, empty selections and
+streams, ambiguous-input rejection, multiple samples, and overwrite refusal.
+
+See [development validation results](prioritization_refactor_validation.md).
