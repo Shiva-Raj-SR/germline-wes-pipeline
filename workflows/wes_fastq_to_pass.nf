@@ -110,6 +110,40 @@ workflow {
         file("${params.known_sites_dir}/${name}")
     })
 
+    // Check reference compatibility before starting the pipeline.
+    def validator = file(
+        "${projectDir}/../scripts/validate_reference_compatibility.py",
+        checkIfExists: true
+    )
+
+    def validation_command = [
+        'python3',
+        validator.toString(),
+        '--bwa-fasta', "${params.bwa_ref_dir}/${refname}",
+        '--gatk-fasta', "${params.gatk_ref_dir}/${refname}",
+        '--fai', "${params.gatk_ref_dir}/${refname}.fai",
+        '--dict', "${params.gatk_ref_dir}/" +
+            refname.replaceFirst(/\.fasta$/, '.dict'),
+        '--capture', params.capture_intervals.toString(),
+        '--calling', params.calling_intervals.toString(),
+        '--known-sites',
+        "${params.known_sites_dir}/Homo_sapiens_assembly38.dbsnp138.vcf",
+        "${params.known_sites_dir}/Homo_sapiens_assembly38.known_indels.vcf.gz",
+        "${params.known_sites_dir}/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz"
+    ]
+
+    def check = new ProcessBuilder(validation_command)
+        .redirectErrorStream(true)
+        .start()
+
+    def report = check.inputStream.getText('UTF-8')
+    def status = check.waitFor()
+
+    if (status != 0)
+        error "Reference compatibility validation failed:\n${report}"
+
+    println report.trim()
+
     // FASTQ QC branch.
     FASTQC(reads)
 
