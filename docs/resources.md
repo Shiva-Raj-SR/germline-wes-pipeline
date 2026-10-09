@@ -4,13 +4,19 @@
 
 Primary reference build: GRCh38
 
-The pipeline will use a GRCh38 reference from the Broad/GATK resource ecosystem.
+The HG002 analysis used the Broad/GATK GRCh38 reference:
 
-The exact FASTA filename, source URL, checksum, and associated index files will be recorded after download.
+`resources/reference/Homo_sapiens_assembly38.fasta`
+
+The FASTA index, sequence dictionary, and BWA-MEM index files are stored in the same directory.
+
+The FASTA index and sequence dictionary contain 3,366 contigs with matching names, lengths, and order. The reference metadata also passed compatibility checks against the known-sites VCFs and Agilent V5 interval lists.
+
+The original download URL and FASTA checksum still need to be recorded after verification.
 
 ## Reference indexes
 
-The reference FASTA will require:
+The reference FASTA has the following index and dictionary files:
 
 - BWA index files for read alignment
 - FASTA `.fai` index for random sequence access
@@ -18,34 +24,38 @@ The reference FASTA will require:
 
 ## BQSR known-sites resources
 
-GRCh38-compatible known-variant resources will be used for GATK Base Quality Score Recalibration (BQSR).
+The HG002 analysis used three GRCh38-compatible known-sites resources for GATK Base Quality Score Recalibration (BQSR).
 
-Planned resources include:
+The files are stored in `resources/known_sites/`:
 
-- dbSNP
-- Mills and 1000 Genomes gold-standard indels
-- Broad/GATK known indels
+- `Homo_sapiens_assembly38.dbsnp138.vcf`
+- `Homo_sapiens_assembly38.known_indels.vcf.gz`
+- `Mills_and_1000G_gold_standard.indels.hg38.vcf.gz`
 
-Exact filenames and versions will be recorded before BQSR.
+The dbSNP VCF has a `.idx` index. Both compressed indel VCFs have `.tbi` indexes.
+
+The three VCF headers were checked against the Broad GRCh38 reference. All declared 3,366 contigs matched the reference names and lengths.
 
 ## WES target intervals
 
-Capture-kit-specific target intervals will be used for WES coverage assessment and appropriate region-restricted analyses.
+The HG002 dataset was generated using the Agilent SureSelect Human All Exon V5 capture design (S04380110).
 
-The interval resource must correspond to the sequencing library's actual exome capture design and be compatible with the selected GRCh38 reference.
+The project uses two GRCh38 interval lists:
+
+- `resources/intervals/S04380110_Regions.interval_list` contains 230,719 intervals for hybrid-selection coverage assessment.
+- `resources/intervals/S04380110_Regions.autosomes.interval_list` contains 222,043 intervals for autosome-restricted variant calling.
+
+Both interval lists passed the GRCh38 reference compatibility check.
+
+For another WES dataset, the capture intervals must match the library preparation used for that sample.
 
 ## GIAB benchmark resources
 
-HG002 will be used for pipeline benchmarking.
+The HG002 variant calls were benchmarked against GIAB v5.0q on GRCh38.
 
-Benchmarking requires:
+The analysis used the GIAB truth VCF and benchmark-region BED. The WES benchmark region was derived by intersecting GIAB benchmark regions with Agilent V5 targets. Variant calling used an autosome-restricted interval list.
 
-- an HG002 benchmark/truth VCF
-- corresponding benchmark-region BED
-- compatible reference genome
-- appropriate handling of the WES target region
-
-The exact GIAB benchmark release will be selected and documented before benchmarking.
+The resource files and target-region statistics are recorded below. The benchmarking methods and results are documented in `docs/benchmarking.md`.
 
 ## Compatibility requirement
 
