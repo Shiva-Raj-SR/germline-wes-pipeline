@@ -12,10 +12,13 @@ Evaluation was restricted to the intersection of:
 - autosomes chr1-chr22
 
 The resulting autosomal evaluation territory contains 215,950 intervals
-covering 47,405,929 bp (47.41 Mb).
+covering 47,405,929 bp (47.41 Mb). This is smaller than the
+49,216,825 bp WES benchmark region recorded in `docs/resources.md`,
+which was calculated before restricting the evaluation to autosomes.
 
 The query callset consisted of normalized, hard-filtered PASS variants
-generated from HG002 WES data.
+generated during the manual HG002 analysis. The complete Nextflow
+FASTQ-to-PASS workflow was tested separately using synthetic data.
 
 RTG Tools vcfeval v3.13 was used for haplotype-aware comparison.
 
@@ -57,8 +60,8 @@ Using the complete PASS callset without additional GQ thresholding:
 
 ## Interpretation
 
-The workflow demonstrates high accuracy for germline SNP discovery within
-the benchmarkable WES target territory.
+The manual HG002 analysis showed high accuracy for germline SNP discovery
+within the benchmarkable WES target territory.
 
 Indel performance is lower than SNP performance, reflecting the greater
 difficulty of short-read indel detection and local haplotype reconstruction.
