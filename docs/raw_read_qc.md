@@ -39,8 +39,8 @@ capture-enrichment bias rather than evidence requiring trimming.
 
 ## Pre-alignment decision
 
-No adapter or quality trimming will be performed.
+No adapter or quality trimming was performed.
 
-The verified raw paired-end FASTQ files will be aligned directly to the
+The verified raw paired-end FASTQ files were aligned directly to the
 Broad/GATK GRCh38 reference using BWA-MEM.
 
