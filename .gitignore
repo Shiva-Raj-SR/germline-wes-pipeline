@@ -36,6 +36,11 @@ data/raw/
 # Log files
 *.log
 
+# Nextflow execution metadata
+/.nextflow/
+/.nextflow.log*
+
+
 # OS/editor files
 .DS_Store
 

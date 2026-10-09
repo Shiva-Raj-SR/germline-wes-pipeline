@@ -18,14 +18,15 @@ include { COMBINE_PASS_VARIANTS } from '../modules/local/combine_pass_variants'
 
 workflow {
     def required = [
-        'r1', 'r2', 'reference_name',
+        'sample_id', 'r1', 'r2', 'reference_name',
         'bwa_ref_dir', 'gatk_ref_dir',
         'known_sites_dir',
         'capture_intervals', 'calling_intervals'
     ]
 
     required.each { name ->
-        if (!params[name])
+        if (!params.containsKey(name) ||
+            !params[name]?.toString()?.trim())
             error "Missing required parameter: --${name}"
     }
 
@@ -57,7 +58,10 @@ workflow {
         }
     }
 
-    def sample_id = params.sample_id ?: 'TEST'
+    def sample_id = params.sample_id.toString().trim()
+
+    if (!(sample_id ==~ /[A-Za-z0-9][A-Za-z0-9_.-]*/))
+        error 'Invalid --sample_id: use letters, numbers, dots, underscores or hyphens; start with a letter or number'
     def refname = params.reference_name.toString()
 
     if (!refname.endsWith('.fasta'))
