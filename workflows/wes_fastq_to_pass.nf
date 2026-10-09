@@ -35,6 +35,39 @@ workflow {
     if (!refname.endsWith('.fasta'))
         error 'Reference name must end with .fasta'
 
+    def input_files = [
+        params.r1,
+        params.r2,
+        params.capture_intervals,
+        params.calling_intervals,
+        "${params.gatk_ref_dir}/${refname}",
+        "${params.gatk_ref_dir}/${refname}.fai",
+        "${params.gatk_ref_dir}/" +
+            refname.replaceFirst(/\.fasta$/, '.dict')
+    ]
+
+    input_files += [
+        '', '.64.amb', '.64.ann', '.64.bwt',
+        '.64.pac', '.64.sa', '.64.alt'
+    ].collect { suffix ->
+        "${params.bwa_ref_dir}/${refname}${suffix}"
+    }
+
+    input_files += [
+        'Homo_sapiens_assembly38.dbsnp138.vcf',
+        'Homo_sapiens_assembly38.dbsnp138.vcf.idx',
+        'Homo_sapiens_assembly38.known_indels.vcf.gz',
+        'Homo_sapiens_assembly38.known_indels.vcf.gz.tbi',
+        'Mills_and_1000G_gold_standard.indels.hg38.vcf.gz',
+        'Mills_and_1000G_gold_standard.indels.hg38.vcf.gz.tbi'
+    ].collect { name ->
+        "${params.known_sites_dir}/${name}"
+    }
+
+    input_files.each { location ->
+        file(location.toString(), checkIfExists: true)
+    }
+
     def reads = Channel.of(
         tuple(sample_id, [
             file(params.r1),
