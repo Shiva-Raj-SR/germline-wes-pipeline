@@ -21,7 +21,7 @@ The project follows a Build → Validate → Apply strategy:
 - Assay: whole-exome sequencing
 - Role: benchmark sample
 
-## Planned analysis
+## Analysis workflow
 
 FASTQ
 → raw-read QC
@@ -36,18 +36,16 @@ FASTQ
 
 ## Reference genome
 
-GRCh38 will be used for the primary analysis.
-
-Exact reference FASTA, known-sites resources, capture intervals, and benchmark resources will be documented before analysis.
+The HG002 analysis used the Broad GRCh38 reference. The known-sites resources, Agilent V5 capture intervals, and GIAB benchmark files are recorded in `docs/resources.md`.
 
 ## Benchmarking principle
 
-Variant calls generated from HG002 WES data will be compared against an appropriate GIAB HG002 truth set.
+HG002 variant calls were benchmarked against GIAB v5.0q on GRCh38. The evaluation used the intersection of GIAB confident regions, Agilent V5 targets, and autosomes.
 
-Benchmark evaluation must be restricted to genomic regions where comparison is scientifically valid. The exact benchmark release, confident regions, reference build, and WES target-region handling will be documented before benchmarking.
+The benchmarking method and results are recorded in `docs/benchmarking.md`.
 
 ## Reproducibility
 
-Software versions, reference resources, commands, parameters, intermediate QC metrics, and workflow decisions will be recorded throughout the project.
+Software versions, reference resources, commands, parameters, QC metrics, and workflow decisions are recorded in the project.
 
-The workflow will first be executed manually and subsequently implemented using Nextflow DSL2.
+The HG002 analysis was completed manually. The processing steps were subsequently implemented as a 13-process Nextflow DSL2 workflow and tested using synthetic data. The complete Nextflow workflow has not been rerun on the original HG002 reads.
