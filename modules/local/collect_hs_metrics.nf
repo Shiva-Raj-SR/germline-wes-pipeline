@@ -4,7 +4,7 @@ process COLLECT_HS_METRICS {
     cpus 1
     memory '3 GB'
 
-    conda "${System.getenv('HOME')}/miniconda3/envs/germline-wes"
+    conda "${params.wes_conda_env}"
 
     input:
     tuple val(sample_id), path(bam), path(bai)

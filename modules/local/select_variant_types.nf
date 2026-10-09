@@ -4,7 +4,7 @@ process SELECT_VARIANT_TYPES {
     cpus 1
     memory '6 GB'
 
-    conda "${System.getenv('HOME')}/miniconda3/envs/germline-wes"
+    conda "${params.wes_conda_env}"
 
     input:
     tuple val(sample_id), path(norm_vcf), path(norm_index)

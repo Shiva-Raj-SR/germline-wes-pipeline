@@ -4,7 +4,7 @@ process HAPLOTYPE_CALLER {
     cpus 2
     memory '6 GB'
 
-    conda "${System.getenv('HOME')}/miniconda3/envs/germline-wes"
+    conda "${params.wes_conda_env}"
 
     input:
     tuple val(sample_id), path(bam), path(bai)
