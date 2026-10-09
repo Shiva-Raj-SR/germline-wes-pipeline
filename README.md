@@ -63,9 +63,12 @@ See `docs/resources.md` for the reference and benchmark resources.
 
 ### Running the workflow
 
-The workflow requires paired FASTQ files, a BWA-indexed reference,
-GATK reference files, three indexed BQSR known-sites resources,
-capture intervals, and calling intervals.
+The workflow requires a sample ID, paired FASTQ files, a BWA-indexed
+reference, GATK reference files, three indexed BQSR known-sites
+resources, capture intervals, and calling intervals.
+
+The sample ID must start with a letter or number and can contain
+letters, numbers, underscores, hyphens, and dots.
 
 Run the workflow explicitly using
 `workflows/wes_fastq_to_pass.nf`. The repository's existing
