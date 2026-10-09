@@ -29,6 +29,34 @@ workflow {
             error "Missing required parameter: --${name}"
     }
 
+    if (params.containsKey('publish_outputs_enabled') &&
+        params.publish_outputs_enabled) {
+
+        if (!params.containsKey('outdir') ||
+            !params.outdir?.toString()?.trim())
+            error 'Set --outdir when output publishing is enabled'
+
+        def output_dir = java.nio.file.Paths.get(
+            params.outdir.toString()
+        )
+
+        if (!output_dir.isAbsolute())
+            error '--outdir must be an absolute path'
+
+        if (java.nio.file.Files.exists(output_dir)) {
+            if (!java.nio.file.Files.isDirectory(output_dir))
+                error "Output path is not a directory: ${output_dir}"
+
+            def entries = output_dir.toFile().list()
+
+            if (entries == null)
+                error "Cannot inspect output directory: ${output_dir}"
+
+            if (entries.length > 0)
+                error "Output directory is not empty: ${output_dir}"
+        }
+    }
+
     def sample_id = params.sample_id ?: 'TEST'
     def refname = params.reference_name.toString()
 
