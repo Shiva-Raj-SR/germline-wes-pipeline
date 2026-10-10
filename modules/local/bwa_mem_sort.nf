@@ -1,7 +1,7 @@
 process BWA_MEM_SORT {
     tag "${sample_id}"
 
-    cpus 4
+    cpus 12
     memory '7 GB'
 
     conda "${params.wes_conda_env}"
@@ -23,14 +23,14 @@ process BWA_MEM_SORT {
     """
     set -euo pipefail
 
-    bwa mem -t 2 \
+    bwa mem -t 6 \
         -R '${read_group}' \
         '${fasta}' \
         '${reads[0]}' \
         '${reads[1]}' \
         2> ${sample_id}.bwa.log \
     | samtools sort \
-        -@ 1 \
+        -@ 4 \
         -m 256M \
         -T ${sample_id}.sort.tmp \
         -o ${sample_id}.sorted.bam \
