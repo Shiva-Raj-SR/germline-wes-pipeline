@@ -39,10 +39,14 @@ The downstream variant-processing workflow was also tested separately
 using 14 synthetic variants. All 14 records were retained in the
 combined filtered VCF, and 2 records passed the filtering criteria.
 
-The complete Nextflow workflow has not been rerun on the original
-HG002 sequencing dataset. The existing HG002 variant-calling,
-benchmarking, and prioritization results were generated and validated
-during the earlier manual analysis.
+The complete 13-process Nextflow workflow was subsequently run on
+the original HG002 WES dataset (SRR2962669). It produced 44,291 PASS
+records, compared with 44,289 from the manual analysis. All 44,289
+manual PASS alleles and genotype strings matched.
+
+Independent GIAB v5.0q benchmarking produced identical precision
+(97.38%), sensitivity (95.83%), and F-measure (96.60%).
+See `docs/benchmarking.md` for details and limitations.
 
 ### Software and reference resources
 

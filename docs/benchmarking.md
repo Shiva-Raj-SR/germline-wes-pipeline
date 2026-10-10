@@ -16,9 +16,12 @@ covering 47,405,929 bp (47.41 Mb). This is smaller than the
 49,216,825 bp WES benchmark region recorded in `docs/resources.md`,
 which was calculated before restricting the evaluation to autosomes.
 
-The query callset consisted of normalized, hard-filtered PASS variants
-generated during the manual HG002 analysis. The complete Nextflow
-FASTQ-to-PASS workflow was tested separately using synthetic data.
+The original query callset consisted of normalized, hard-filtered
+PASS variants from the manual HG002 analysis. The integrated 13-process
+Nextflow workflow was initially tested using synthetic data and was
+subsequently executed on the original HG002 WES FASTQs. Its PASS callset
+was benchmarked separately using the same GIAB and RTG evaluation
+settings.
 
 RTG Tools vcfeval v3.13 was used for haplotype-aware comparison.
 
@@ -123,3 +126,63 @@ The hard-filtered PASS callset is retained for downstream annotation
 because it provides higher precision, while both pre-filter and
 post-filter benchmark results are reported to make the sensitivity-
 specificity trade-off explicit.
+
+## Full-scale Nextflow HG002 validation
+
+The integrated 13-process FASTQ-to-PASS workflow was executed on the
+original HG002 WES dataset (SRR2962669) using Nextflow 26.04.6.
+All processes completed, producing indexed filtered and PASS VCFs.
+
+The Nextflow PASS callset contained 44,291 records, compared with
+44,289 records from the earlier manual analysis. Comparison by
+chromosome, position, reference allele, and alternate allele found
+44,289 shared records and no manual-only records. All 44,289 shared
+genotype (GT) strings matched exactly.
+
+Two additional Nextflow PASS SNPs were identified:
+
+- chr11:1018228 G>A: MQRankSum changed from -12.62 (manual, filtered)
+  to -12.38 (Nextflow, PASS), crossing the -12.5 threshold.
+- chr19:54736120 G>C: QD changed from 1.84 (manual, filtered)
+  to 2.14 (Nextflow, PASS), crossing the 2.0 threshold.
+
+The relevant hard-filter expressions were the same in both analyses.
+The upstream cause of the annotation differences has not been
+established. Both additional SNPs fall outside the predefined
+autosomal GIAB WES evaluation territory.
+
+### Nextflow GIAB benchmark comparison
+
+The Nextflow PASS callset was independently evaluated with RTG Tools
+vcfeval v3.13 using the original GIAB HG002 v5.0q truth VCF,
+GRCh38 RTG reference template, and autosomal Agilent V5 benchmark
+territory (47,405,929 bp). Sample selection and evaluation settings
+were unchanged from the manual benchmark.
+
+| Metric | Manual | Nextflow |
+|---|---:|---:|
+| TP (baseline) | 40,798 | 40,798 |
+| TP (called) | 40,814 | 40,814 |
+| False positives | 1,100 | 1,100 |
+| False negatives | 1,776 | 1,776 |
+| Precision | 97.38% | 97.38% |
+| Sensitivity | 95.83% | 95.83% |
+| F-measure | 96.60% | 96.60% |
+
+The values correspond to the unthresholded (`None`) vcfeval
+summary row. The original and Nextflow summary files were
+byte-identical.
+
+Both evaluations reported 5,390 problematic baseline variants
+skipped during loading. This limitation applies to both results
+and is retained in the interpretation of benchmarking performance.
+
+The new evaluation was written to
+`results/benchmark/rtg/HG002_autosomes_nextflow_full_01/`.
+The original manual evaluation remains at
+`results/benchmark/rtg/HG002_autosomes/`.
+
+GIAB benchmarking was performed separately from the integrated
+13-process Nextflow workflow. Matching aggregate benchmark metrics
+do not establish identical variant annotations or genome-wide
+accuracy outside the defined evaluation territory.
