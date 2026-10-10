@@ -1,7 +1,7 @@
 process BWA_MEM_SORT {
     tag "${sample_id}"
 
-    cpus 12
+    cpus 11
     memory '7 GB'
 
     conda "${params.wes_conda_env}"
