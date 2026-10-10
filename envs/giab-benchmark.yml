@@ -5,4 +5,3 @@ channels:
   - conda-forge
 dependencies:
   - rtg-tools=3.13
-prefix: /home/shiva/miniconda3/envs/giab-benchmark

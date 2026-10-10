@@ -6,4 +6,3 @@ channels:
 dependencies:
   - bcftools
   - ensembl-vep=116.2
-prefix: /home/shiva/miniconda3/envs/vep-annotation

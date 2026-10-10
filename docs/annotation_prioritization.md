@@ -260,10 +260,11 @@ streamed; no full all-transcript table is materialized.
 
 ### Execution and verification
 
-Run inside the verified local WSL repository:
+Run from the repository checkout. Replace the directory below
+with the location of your own repository:
 
 ```bash
-cd /home/shiva/bioinformatics_projects/germline-wes-pipeline
+cd /path/to/germline-wes-pipeline
 conda activate vep-annotation
 run_root="$(mktemp -d /tmp/hg002-prioritization.XXXXXX)"
 scripts/produce_hg002_prioritization.sh --out-dir "$run_root/generated"

@@ -9,4 +9,3 @@ dependencies:
   - r-ggplot2
   - r-reshape
   - r-gsalib
-prefix: /home/shiva/miniconda3/envs/gatk-r
