@@ -98,3 +98,8 @@ results/benchmark/**/progress
 /results/annotation/summary/HG002.shortlist30_GIAB.tsv
 /results/annotation/summary/HG002.clinvar_PLPath.tsv
 /results/annotation/summary/HG002.clinvar_pathogenic.tsv
+
+# Full-scale HG002 validation outputs
+# Scientific results remain local; checksums and provenance are tracked.
+/results/nextflow_hg002_full_01/
+/results/benchmark/rtg/HG002_autosomes_nextflow_full_01/
