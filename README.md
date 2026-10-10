@@ -4,7 +4,7 @@ A reproducible germline whole-exome sequencing (WES) analysis pipeline for varia
 
 ## Project status
 
-In development.
+**Completed — initial implementation and HG002 analysis.**
 
 ## Nextflow WES workflow
 
@@ -70,9 +70,9 @@ resources, capture intervals, and calling intervals.
 The sample ID must start with a letter or number and can contain
 letters, numbers, underscores, hyphens, and dots.
 
-Run the workflow explicitly using
-`workflows/wes_fastq_to_pass.nf`. The repository's existing
-`main.nf` is used for the separate HG002 prioritization workflow.
+Run the integrated WES workflow from the repository root with
+`nextflow run .`. The separate HG002 prioritization verification
+workflow is in `workflows/hg002_prioritization_verification.nf`.
 
 For runs with output publishing enabled, supply an absolute `--outdir`
 path pointing to a new or empty directory. The workflow rejects
@@ -86,7 +86,7 @@ The publishing configuration is `conf/publish_outputs.config`.
 Run the workflow from the repository root. Replace the sample ID,
 FASTQ paths, and output directory with the files for the analysis.
 
-    nextflow run workflows/wes_fastq_to_pass.nf \
+    nextflow run . \
       -c nextflow.config \
       -c conf/publish_outputs.config \
       --sample_id SAMPLE_ID \
